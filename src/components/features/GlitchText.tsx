@@ -20,16 +20,16 @@ export default function GlitchText({ text, className = "", as: Tag = "span", del
   if (!visible) return <Tag className={className} style={{ opacity: 0 }}>{text}</Tag>;
 
   return (
-    <Tag className={`relative inline-block ${className}`} data-text={text}>
-      <span className="relative z-10">{text}</span>
+    <Tag className="relative inline-block" data-text={text}>
+      <span className={`relative z-10 ${className}`}>{text}</span>
       <span
-        className="absolute inset-0 glitch-layer-1"
+        className={`absolute inset-0 glitch-layer-1 ${className}`}
         aria-hidden="true"
       >
         {text}
       </span>
       <span
-        className="absolute inset-0 glitch-layer-2"
+        className={`absolute inset-0 glitch-layer-2 ${className}`}
         aria-hidden="true"
       >
         {text}
