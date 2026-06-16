@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { toast } from "sonner";
-import NeuralCanvas from "./NeuralCanvas";
 import DecryptText from "./DecryptText";
+
+const DataStreamScene = lazy(() => import("@/components/three/DataStreamScene"));
 
 export default function ContactSection() {
   const { ref, visible } = useScrollReveal(0.1);
@@ -35,7 +36,9 @@ export default function ContactSection() {
       className="relative min-h-screen py-24 overflow-hidden flex items-center"
     >
       <div className="absolute inset-0 opacity-30">
-        <NeuralCanvas nodeCount={60} interactive={false} />
+        <Suspense fallback={null}>
+          <DataStreamScene className="w-full h-full" />
+        </Suspense>
       </div>
       <div className="noise-overlay" />
 

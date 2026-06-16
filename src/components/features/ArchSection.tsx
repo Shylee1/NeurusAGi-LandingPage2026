@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import lnnViz from "@/assets/lnn-viz.jpg";
 import dataStorage from "@/assets/data-storage.jpg";
 import safetyArch from "@/assets/safety-arch.jpg";
 import quantumSphere from "@/assets/quantum-sphere.jpg";
+
+const CrystalScene = lazy(() => import("@/components/three/CrystalScene"));
 
 const PILLARS = [
   {
@@ -65,44 +67,47 @@ function PillarScene({ pillar, active }: { pillar: typeof PILLARS[0]; active: bo
         <div className="absolute inset-0 bg-gradient-to-t from-void via-transparent to-void/50" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-center px-8 lg:px-16 max-w-xl">
-        <div className="flex items-center gap-3 mb-6">
-          <span
-            className="font-mono text-xs tracking-widest"
-            style={{ color: pillar.color }}
-          >
-            {pillar.label}
-          </span>
-          <div className="flex-1 h-[1px]" style={{ background: `linear-gradient(90deg, ${pillar.color}44, transparent)` }} />
-          <span
-            className="font-mono text-xs tracking-[0.3em] px-3 py-1 border"
-            style={{ color: pillar.color, borderColor: `${pillar.color}33` }}
-          >
-            {pillar.abbr}
-          </span>
+      {/* Content + 3D Crystal layout */}
+      <div className="relative z-10 h-full flex items-center px-8 lg:px-16 gap-8 lg:gap-16">
+        <div className="flex flex-col justify-center max-w-lg flex-1">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="font-mono text-xs tracking-widest" style={{ color: pillar.color }}>
+              {pillar.label}
+            </span>
+            <div className="flex-1 h-[1px]" style={{ background: `linear-gradient(90deg, ${pillar.color}44, transparent)` }} />
+            <span
+              className="font-mono text-xs tracking-[0.3em] px-3 py-1 border"
+              style={{ color: pillar.color, borderColor: `${pillar.color}33` }}
+            >
+              {pillar.abbr}
+            </span>
+          </div>
+
+          <h3 className="font-grotesk font-700 text-3xl md:text-4xl text-white leading-tight mb-5">
+            {pillar.title}
+          </h3>
+
+          <p className="text-white/55 font-grotesk leading-relaxed text-base mb-8">
+            {pillar.description}
+          </p>
+
+          <div className="flex gap-8">
+            {pillar.stats.map((stat, i) => (
+              <div key={i} className="flex flex-col">
+                <span className="font-mono font-700 text-2xl md:text-3xl" style={{ color: pillar.color }}>
+                  {stat.value}
+                </span>
+                <span className="font-mono text-xs text-white/40 tracking-wider mt-1">{stat.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <h3 className="font-grotesk font-700 text-3xl md:text-4xl text-white leading-tight mb-5">
-          {pillar.title}
-        </h3>
-
-        <p className="text-white/55 font-grotesk leading-relaxed text-base mb-8">
-          {pillar.description}
-        </p>
-
-        <div className="flex gap-8">
-          {pillar.stats.map((stat, i) => (
-            <div key={i} className="flex flex-col">
-              <span
-                className="font-mono font-700 text-2xl md:text-3xl"
-                style={{ color: pillar.color }}
-              >
-                {stat.value}
-              </span>
-              <span className="font-mono text-xs text-white/40 tracking-wider mt-1">{stat.label}</span>
-            </div>
-          ))}
+        {/* 3D Holographic Crystal */}
+        <div className="hidden lg:block shrink-0 w-56 h-56 xl:w-72 xl:h-72">
+          <Suspense fallback={null}>
+            <CrystalScene color={pillar.color} index={PILLARS.indexOf(pillar)} />
+          </Suspense>
         </div>
       </div>
     </div>

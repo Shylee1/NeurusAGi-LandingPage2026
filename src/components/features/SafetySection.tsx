@@ -1,6 +1,9 @@
+import { lazy, Suspense } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import safetyArch from "@/assets/safety-arch.jpg";
 import DecryptText from "./DecryptText";
+
+const SafetyScene = lazy(() => import("@/components/three/SafetyScene"));
 
 const PRINCIPLES = [
   {
@@ -99,50 +102,24 @@ export default function SafetySection() {
             </div>
           </div>
 
-          {/* Right — visual */}
+          {/* Right — 3D containment visualization */}
           <div className={`relative hidden lg:flex items-center justify-center transition-all duration-1000 delay-300 ${visible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
-            {/* Concentric rings */}
-            <div className="relative w-80 h-80">
-              {[1, 0.75, 0.55, 0.38].map((scale, i) => (
-                <div
-                  key={i}
-                  className="absolute inset-0 m-auto rounded-full border"
-                  style={{
-                    width: `${scale * 100}%`,
-                    height: `${scale * 100}%`,
-                    borderColor: i % 2 === 0 ? "#0ccfb033" : "#d4a85322",
-                    animation: `orbit-${(i % 3) + 1} ${12 + i * 6}s linear infinite${i % 2 === 0 ? "" : " reverse"}`,
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-              ))}
-
-              {/* Center orb */}
-              <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-void border border-teal-neural/30 flex items-center justify-center animate-glow-pulse"
-                style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-              >
-                <div className="text-center">
-                  <div className="w-3 h-3 rounded-full bg-teal-neural mx-auto mb-1 animate-pulse" />
-                  <span className="font-mono text-[9px] text-teal-neural/60 tracking-widest block">SAFE</span>
-                  <span className="font-mono text-[9px] text-teal-neural/60 tracking-widest block">AGi</span>
-                </div>
+            <div className="relative w-[420px] h-[420px]">
+              <Suspense fallback={null}>
+                <SafetyScene className="w-full h-full" />
+              </Suspense>
+              {/* Principle labels overlaid */}
+              <div className="absolute inset-0 pointer-events-none">
+                {["No Self-Awareness", "Task-Bound", "Contained", "Corrigible"].map((label, i) => (
+                  <div
+                    key={i}
+                    className="absolute font-mono text-[10px] tracking-widest text-white/30 whitespace-nowrap"
+                    style={{ top: `${12 + i * 20}%`, right: "2%" }}
+                  >
+                    <span style={{ color: PRINCIPLES[i].color + "88" }}>— </span>{label}
+                  </div>
+                ))}
               </div>
-
-              {/* Labels on rings */}
-              {["No Self-Awareness", "Task-Bound", "Contained", "Corrigible"].map((label, i) => (
-                <div
-                  key={i}
-                  className="absolute font-mono text-[10px] tracking-widest text-white/30 whitespace-nowrap"
-                  style={{
-                    top: `${10 + i * 22}%`,
-                    right: "-40%",
-                  }}
-                >
-                  <span style={{ color: PRINCIPLES[i].color + "88" }}>— </span>{label}
-                </div>
-              ))}
             </div>
           </div>
         </div>

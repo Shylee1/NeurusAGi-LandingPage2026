@@ -1,6 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, lazy, Suspense } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import portabilityImg from "@/assets/portability.jpg";
+
+const AmbientScene = lazy(() => import("@/components/three/AmbientScene"));
 
 const CAPABILITIES = [
   {
@@ -92,6 +94,12 @@ export default function CapabilitiesSection() {
       <div className="absolute inset-0 opacity-15">
         <img src={portabilityImg} alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-void/90" />
+      </div>
+      {/* Ambient 3D plasma layer */}
+      <div className="absolute inset-0 opacity-60 pointer-events-none">
+        <Suspense fallback={null}>
+          <AmbientScene className="w-full h-full" />
+        </Suspense>
       </div>
 
       <div className="relative z-10">

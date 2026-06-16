@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, lazy, Suspense } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import NeuralCanvas from "./NeuralCanvas";
+
+const DataStreamScene = lazy(() => import("@/components/three/DataStreamScene"));
 
 const COMPARE = [
   {
@@ -101,9 +102,11 @@ export default function IntelligenceSection() {
     >
       <div className="noise-overlay" />
 
-      {/* Background neural net */}
-      <div className="absolute inset-0 opacity-20">
-        <NeuralCanvas nodeCount={50} interactive={false} />
+      {/* Background data streams */}
+      <div className="absolute inset-0 opacity-25">
+        <Suspense fallback={null}>
+          <DataStreamScene className="w-full h-full" />
+        </Suspense>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">

@@ -1,127 +1,135 @@
-import { useEffect, useRef, useState } from "react";
-import NeuralCanvas from "./NeuralCanvas";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import GlitchText from "./GlitchText";
 import DecryptText from "./DecryptText";
-import heroBg from "@/assets/hero-bg.jpg";
+
+const HeroScene = lazy(() => import("@/components/three/HeroScene"));
+
+const getPrefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export default function HeroSection() {
   const [phase, setPhase] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [sceneReady, setSceneReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 400);
-    const t2 = setTimeout(() => setPhase(2), 1200);
-    const t3 = setTimeout(() => setPhase(3), 2400);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const rect = heroRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      setMousePos({ x, y });
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
+    const t1 = setTimeout(() => setPhase(1), 300);
+    const t2 = setTimeout(() => setPhase(2), 1100);
+    const t3 = setTimeout(() => setPhase(3), 2200);
+    const t4 = setTimeout(() => setSceneReady(true), 100);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   }, []);
 
   return (
     <section
       ref={heroRef}
       id="hero"
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden scanlines"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
     >
-      {/* Deep space background */}
-      <div className="absolute inset-0">
-        <img
-          src={heroBg}
-          alt=""
-          className="w-full h-full object-cover opacity-30"
-          style={{
-            transform: `translate(${mousePos.x * -15}px, ${mousePos.y * -10}px) scale(1.08)`,
-            transition: "transform 0.1s ease-out",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-void/60 via-transparent to-void" />
-        <div className="absolute inset-0 bg-gradient-radial-void" />
-      </div>
+      {/* Deep space bg */}
+      <div
+        className="absolute inset-0"
+        style={{ background: "radial-gradient(ellipse 80% 70% at 50% 50%, #0a1a16 0%, #030508 70%)" }}
+      />
 
-      {/* Neural canvas layer */}
-      <div className="absolute inset-0 opacity-60">
-        <NeuralCanvas nodeCount={100} />
-      </div>
+      {/* Scanlines */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(12,207,176,0.012) 2px, rgba(12,207,176,0.012) 4px)",
+          zIndex: 2,
+        }}
+      />
 
-      {/* HUD grid lines */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[20, 40, 60, 80].map((y) => (
-          <div key={y} className="hud-line" style={{ top: `${y}%`, opacity: 0.3 }} />
+      {/* 3D Quantum Orb Scene */}
+      {sceneReady && (
+        <div className="absolute inset-0 flex items-center justify-center" style={{ zIndex: 1 }}>
+          <div
+            className="absolute"
+            style={{
+              width: isMobile ? "100vw" : "min(90vh, 900px)",
+              height: isMobile ? "100vw" : "min(90vh, 900px)",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Suspense fallback={null}>
+              <HeroScene reducedMotion={getPrefersReducedMotion()} />
+            </Suspense>
+          </div>
+        </div>
+      )}
+
+      {/* Radial vignette to blend 3D into background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 55% 55% at 50% 50%, transparent 35%, #030508 100%)",
+          zIndex: 3,
+        }}
+      />
+
+      {/* HUD corners */}
+      <div className="absolute top-24 left-8 w-10 h-10 border-t border-l border-teal-neural/30 pointer-events-none" style={{ zIndex: 5 }} />
+      <div className="absolute top-24 right-8 w-10 h-10 border-t border-r border-teal-neural/30 pointer-events-none" style={{ zIndex: 5 }} />
+      <div className="absolute bottom-16 left-8 w-10 h-10 border-b border-l border-teal-neural/30 pointer-events-none" style={{ zIndex: 5 }} />
+      <div className="absolute bottom-16 right-8 w-10 h-10 border-b border-r border-teal-neural/30 pointer-events-none" style={{ zIndex: 5 }} />
+
+      {/* Subtle HUD lines */}
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 4 }}>
+        {[25, 75].map((y) => (
+          <div
+            key={y}
+            className="absolute left-0 right-0 h-px"
+            style={{ top: `${y}%`, background: "linear-gradient(90deg, transparent, rgba(12,207,176,0.07), transparent)" }}
+          />
         ))}
-        <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-teal-neural/10 to-transparent" />
       </div>
 
-      {/* Corner brackets */}
-      <div className="absolute top-24 left-8 w-12 h-12 border-t-2 border-l-2 border-teal-neural/40" />
-      <div className="absolute top-24 right-8 w-12 h-12 border-t-2 border-r-2 border-teal-neural/40" />
-      <div className="absolute bottom-16 left-8 w-12 h-12 border-b-2 border-l-2 border-teal-neural/40" />
-      <div className="absolute bottom-16 right-8 w-12 h-12 border-b-2 border-r-2 border-teal-neural/40" />
+      {/* Main content — above 3D */}
+      <div className="relative flex flex-col items-center text-center max-w-5xl mx-auto px-6" style={{ zIndex: 10 }}>
 
-      {/* Scan beam */}
-      <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-teal-neural/30 to-transparent beam-sweep" />
-
-      {/* Main content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center flex flex-col items-center">
-
-        {/* Status indicator */}
         <div
-          className={`flex items-center gap-2 mb-10 transition-all duration-700 ${phase >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`flex items-center gap-3 mb-10 transition-all duration-700 ${phase >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <span className="w-2 h-2 rounded-full bg-teal-neural animate-pulse-slow" />
-          <span className="font-mono text-xs text-teal-neural/70 tracking-[0.3em] uppercase">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-neural animate-pulse-slow" />
+          <span className="font-mono text-xs text-teal-neural/60 tracking-[0.3em] uppercase">
             System Online · Post-Tokenization Intelligence · v1.0
           </span>
-          <span className="w-2 h-2 rounded-full bg-gold-primary animate-pulse-slow" />
+          <span className="w-1.5 h-1.5 rounded-full bg-gold-primary animate-pulse-slow" />
         </div>
 
-        {/* Main headline */}
         <div
-          className={`transition-all duration-1000 delay-300 ${phase >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+          className={`transition-all duration-1000 delay-200 ${phase >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
         >
-          <h1 className="text-6xl md:text-8xl lg:text-[110px] font-grotesk font-700 leading-none tracking-tighter mb-4">
-            <GlitchText
-              text="Neurus"
-              className="text-white"
-              delay={500}
-            />
-            <GlitchText
-              text="AGi"
-              className="text-gradient-gold gold-glow"
-              delay={700}
-            />
+          <h1 className="text-6xl md:text-8xl lg:text-[106px] font-grotesk font-700 leading-none tracking-tighter mb-4">
+            <GlitchText text="Neurus" className="text-white" delay={400} />
+            <GlitchText text="AGi" className="text-gradient-gold gold-glow" delay={600} />
           </h1>
         </div>
 
-        {/* Tagline decrypt */}
         <div
           className={`mt-4 mb-12 transition-all duration-700 delay-500 ${phase >= 2 ? "opacity-100" : "opacity-0"}`}
         >
           <p className="text-xl md:text-2xl text-white/70 font-grotesk font-300 tracking-wide">
-            <DecryptText
-              text="A quantum leap in intelligence."
-              trigger={phase >= 2}
-              speed={35}
-              className="text-white/80"
-            />
+            <DecryptText text="A quantum leap in intelligence." trigger={phase >= 2} speed={35} className="text-white/80" />
           </p>
         </div>
 
-        {/* Sub descriptor */}
         <div
           className={`max-w-2xl transition-all duration-700 delay-700 ${phase >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <p className="text-base md:text-lg text-white/45 font-grotesk leading-relaxed">
+          <p className="text-base md:text-lg text-white/40 font-grotesk leading-relaxed">
             The world's first portable, quantum-powered AGi — engineered to{" "}
             <span className="text-teal-neural">truly think</span>, not calculate.
             Built on 39 novel cognitive components,{" "}
@@ -130,15 +138,10 @@ export default function HeroSection() {
           </p>
         </div>
 
-        {/* CTA row - NO plain buttons, just interactive links with surgical styling */}
         <div
           className={`mt-14 flex flex-wrap items-center justify-center gap-6 transition-all duration-700 delay-1000 ${phase >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <a
-            href="#architecture"
-            data-cursor="true"
-            className="group relative overflow-hidden"
-          >
+          <a href="#architecture" data-cursor="true" className="group relative overflow-hidden">
             <div className="relative px-10 py-4 font-mono text-sm tracking-widest uppercase text-void font-700 bg-teal-neural hover:bg-teal-glow transition-colors duration-300">
               <span className="relative z-10">Enter the Mind</span>
               <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12" />
@@ -154,29 +157,16 @@ export default function HeroSection() {
           </a>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="mt-20 flex flex-col items-center gap-3 opacity-40">
+        <div className="mt-20 flex flex-col items-center gap-3 opacity-30">
           <span className="font-mono text-xs text-white/50 tracking-widest uppercase">Scroll to Explore</span>
           <div className="w-[1px] h-16 bg-gradient-to-b from-teal-neural/60 to-transparent animate-pulse-slow" />
         </div>
       </div>
 
-      {/* Orbital rings around hero */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none hidden xl:block"
-        style={{ perspective: "800px" }}
-      >
-        {[300, 420, 540].map((size, i) => (
-          <div
-            key={i}
-            className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-teal-neural/10 orbit-ring-${i + 1}`}
-            style={{ width: size, height: size }}
-          />
-        ))}
-      </div>
-
-      {/* Bottom vignette */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-void to-transparent pointer-events-none" />
+        className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none"
+        style={{ background: "linear-gradient(to top, #030508, transparent)", zIndex: 6 }}
+      />
     </section>
   );
 }
