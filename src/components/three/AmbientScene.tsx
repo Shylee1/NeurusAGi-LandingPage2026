@@ -1,7 +1,5 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { AmbientPlasmaMesh } from "./AmbientPlasmaMesh";
 
@@ -11,7 +9,7 @@ interface AmbientSceneProps {
 
 export default function AmbientScene({ className = "" }: AmbientSceneProps) {
   return (
-    <div className={`w-full h-full ${className}`}>
+    <div className={`w-full h-full ${className}`} style={{ filter: "brightness(1.1) saturate(1.2)" }}>
       <Canvas
         gl={{
           antialias: false,
@@ -26,14 +24,6 @@ export default function AmbientScene({ className = "" }: AmbientSceneProps) {
       >
         <Suspense fallback={null}>
           <AmbientPlasmaMesh />
-          <EffectComposer>
-            <Bloom
-              intensity={1.2}
-              luminanceThreshold={0.3}
-              luminanceSmoothing={0.9}
-              blendFunction={BlendFunction.ADD}
-            />
-          </EffectComposer>
         </Suspense>
       </Canvas>
     </div>

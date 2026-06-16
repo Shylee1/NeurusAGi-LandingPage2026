@@ -1,7 +1,5 @@
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, ChromaticAberration } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { QuantumOrb } from "./QuantumOrb";
 import { QuantumField } from "./QuantumField";
@@ -54,7 +52,7 @@ interface HeroSceneProps {
 
 export default function HeroScene({ className = "", reducedMotion = false }: HeroSceneProps) {
   return (
-    <div className={`w-full h-full ${className}`}>
+    <div className={`w-full h-full ${className}`} style={{ filter: reducedMotion ? "none" : "brightness(1.15) saturate(1.3)" }}>
       <Canvas
         gl={{
           antialias: true,
@@ -69,22 +67,6 @@ export default function HeroScene({ className = "", reducedMotion = false }: Her
       >
         <Suspense fallback={null}>
           <SceneContent />
-          {!reducedMotion && (
-            <EffectComposer>
-              <Bloom
-                intensity={1.4}
-                luminanceThreshold={0.2}
-                luminanceSmoothing={0.9}
-                blendFunction={BlendFunction.ADD}
-              />
-              <ChromaticAberration
-                offset={new THREE.Vector2(0.0008, 0.0008)}
-                blendFunction={BlendFunction.NORMAL}
-                radialModulation={false}
-                modulationOffset={0}
-              />
-            </EffectComposer>
-          )}
         </Suspense>
       </Canvas>
     </div>

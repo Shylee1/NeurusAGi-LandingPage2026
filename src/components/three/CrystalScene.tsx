@@ -1,7 +1,5 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { HoloCrystal } from "./HoloCrystal";
 
@@ -13,7 +11,7 @@ interface CrystalSceneProps {
 
 export default function CrystalScene({ color, index, className = "" }: CrystalSceneProps) {
   return (
-    <div className={`w-full h-full ${className}`}>
+    <div className={`w-full h-full ${className}`} style={{ filter: "brightness(1.2) saturate(1.5)" }}>
       <Canvas
         gl={{
           antialias: true,
@@ -31,14 +29,6 @@ export default function CrystalScene({ color, index, className = "" }: CrystalSc
           <pointLight position={[2, 3, 2]} intensity={3} color={color} />
           <pointLight position={[-2, -2, -2]} intensity={1.5} color="#d4a853" />
           <HoloCrystal color={color} index={index} />
-          <EffectComposer>
-            <Bloom
-              intensity={2.0}
-              luminanceThreshold={0.1}
-              luminanceSmoothing={0.8}
-              blendFunction={BlendFunction.ADD}
-            />
-          </EffectComposer>
         </Suspense>
       </Canvas>
     </div>
