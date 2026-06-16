@@ -222,6 +222,28 @@
   opacity: 0;
 }
 
+/* Hero scan beam */
+@keyframes scanBeam {
+  0%   { top: -2px; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Hero data float */
+@keyframes dataFloat {
+  0%   { opacity: 0; transform: translateY(0px); }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-18px); }
+}
+
+/* Scroll drop */
+@keyframes scrollDrop {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
 /* Beam sweep */
 @keyframes beam-sweep {
   0% { opacity: 0; transform: translateX(-100%) skewX(-10deg); }
