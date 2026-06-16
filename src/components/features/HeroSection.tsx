@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import GlitchText from "./GlitchText";
 
 // ─── Neural fiber particle canvas ───────────────────────────────────────────
 function NeuralFiberCanvas() {
@@ -399,45 +398,91 @@ export default function HeroSection() {
           </div>
         </div>
 
+        {/* ── Brain logo visual anchor ── */}
+        <div
+          className={`relative mb-8 transition-all duration-700 delay-100 ${
+            phase >= 1 ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          }`}
+        >
+          {/* Glow rings behind logo */}
+          <div
+            className="absolute inset-0 m-auto rounded-full pointer-events-none"
+            style={{
+              width: "200px",
+              height: "200px",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "radial-gradient(circle, #0ccfb018 0%, #d4a85308 40%, transparent 70%)",
+              filter: "blur(30px)",
+            }}
+          />
+          <div
+            className="relative mx-auto rounded-full overflow-hidden"
+            style={{
+              width: "clamp(120px, 14vw, 180px)",
+              height: "clamp(120px, 14vw, 180px)",
+              boxShadow: "0 0 0 1px #0ccfb020, 0 0 40px #0ccfb018, 0 0 80px #0ccfb00a",
+            }}
+          >
+            <img
+              src="https://cdn-ai.onspace.ai/onspace/project/uploads/VTYhdTdtxks37QntytFFSG/logo1.jpeg"
+              alt="NeurusAGi"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          {/* Orbiting ring */}
+          <div
+            className="absolute inset-0 m-auto rounded-full border border-teal-neural/15 pointer-events-none"
+            style={{
+              width: "clamp(150px, 18vw, 220px)",
+              height: "clamp(150px, 18vw, 220px)",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              animation: "orbit-3 20s linear infinite",
+            }}
+          />
+          <div
+            className="absolute inset-0 m-auto rounded-full border border-gold-primary/10 pointer-events-none"
+            style={{
+              width: "clamp(170px, 21vw, 260px)",
+              height: "clamp(170px, 21vw, 260px)",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              animation: "orbit-3 32s linear infinite reverse",
+            }}
+          />
+        </div>
+
         {/* ── Primary typographic lockup ── */}
         <div
           className={`mb-4 transition-all duration-800 delay-100 ${
             phase >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {/* "Neurus" — massive, tracked out */}
+          {/* Full name on one line with split color */}
           <div className="overflow-hidden">
             <div
-              className={`font-grotesk font-bold leading-none text-white transition-all duration-800 delay-150 ${
+              className={`font-grotesk font-bold leading-none transition-all duration-800 delay-150 ${
                 phase >= 1 ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
               }`}
               style={{
-                fontSize: "clamp(72px, 14vw, 180px)",
+                fontSize: "clamp(52px, 11vw, 148px)",
                 letterSpacing: "-0.03em",
+                lineHeight: 1,
               }}
             >
-              <GlitchText text="Neurus" className="text-white" delay={300} />
-            </div>
-          </div>
-
-          {/* "AGi" — gold gradient, offset right, oversized */}
-          <div className="overflow-hidden flex justify-center md:justify-end md:pr-4">
-            <div
-              className={`font-grotesk font-bold leading-none transition-all duration-800 delay-300 ${
-                phase >= 1 ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-              }`}
-              style={{
-                fontSize: "clamp(72px, 14vw, 180px)",
-                letterSpacing: "-0.03em",
-                background: "linear-gradient(135deg, #d4a853 0%, #f0c040 45%, #ffe082 75%, #d4a853 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                textShadow: "none",
-                filter: "drop-shadow(0 0 40px #d4a85355)",
-              }}
-            >
-              <GlitchText text="AGi" delay={500} />
+              <span style={{ color: "#ffffff" }}>Neurus</span><span
+                style={{
+                  background: "linear-gradient(135deg, #d4a853 0%, #f0c040 45%, #ffe082 75%, #d4a853 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  filter: "drop-shadow(0 0 30px #d4a85366)",
+                }}
+              >AGi</span>
             </div>
           </div>
         </div>

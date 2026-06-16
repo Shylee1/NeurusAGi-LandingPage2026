@@ -1,9 +1,5 @@
-import { lazy, Suspense } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import safetyArch from "@/assets/safety-arch.jpg";
-import DecryptText from "./DecryptText";
-
-const SafetyScene = lazy(() => import("@/components/three/SafetyScene"));
 
 const PRINCIPLES = [
   {
@@ -102,21 +98,88 @@ export default function SafetySection() {
             </div>
           </div>
 
-          {/* Right — 3D containment visualization */}
+          {/* Right — architectural containment diagram (pure CSS/SVG) */}
           <div className={`relative hidden lg:flex items-center justify-center transition-all duration-1000 delay-300 ${visible ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
-            <div className="relative w-[420px] h-[420px]">
-              <Suspense fallback={null}>
-                <SafetyScene className="w-full h-full" />
-              </Suspense>
-              {/* Principle labels overlaid */}
-              <div className="absolute inset-0 pointer-events-none">
-                {["No Self-Awareness", "Task-Bound", "Contained", "Corrigible"].map((label, i) => (
+            <div className="relative w-[420px] h-[420px] flex items-center justify-center">
+              {/* Concentric containment layers */}
+              {[380, 300, 220, 140].map((size, i) => (
+                <div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    width: size,
+                    height: size,
+                    border: `1px solid ${PRINCIPLES[i].color}${i === 0 ? "18" : i === 1 ? "25" : i === 2 ? "35" : "55"}`,
+                    boxShadow: `0 0 ${30 - i * 6}px ${PRINCIPLES[i].color}${i === 3 ? "33" : "15"}`,
+                    animation: `orbit-${(i % 3) + 1} ${20 + i * 8}s linear infinite${i % 2 === 0 ? " reverse" : ""}`,
+                  }}
+                />
+              ))}
+
+              {/* Center core */}
+              <div
+                className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center"
+                style={{
+                  background: "radial-gradient(circle, #0ccfb022 0%, #0ccfb005 100%)",
+                  border: "1px solid #0ccfb055",
+                  boxShadow: "0 0 30px #0ccfb033, inset 0 0 20px #0ccfb011",
+                }}
+              >
+                <div className="w-4 h-4 rounded-full bg-teal-neural" style={{ boxShadow: "0 0 16px #0ccfb0" }} />
+              </div>
+
+              {/* Principle labels at each ring */}
+              {PRINCIPLES.map((p, i) => {
+                const radius = [190, 150, 110, 70][i];
+                const angle = -90 + i * 90;
+                const rad = (angle * Math.PI) / 180;
+                const x = 210 + radius * Math.cos(rad);
+                const y = 210 + radius * Math.sin(rad);
+                return (
                   <div
                     key={i}
-                    className="absolute font-mono text-[10px] tracking-widest text-white/30 whitespace-nowrap"
-                    style={{ top: `${12 + i * 20}%`, right: "2%" }}
+                    className="absolute flex items-center gap-2 pointer-events-none"
+                    style={{
+                      left: x,
+                      top: y,
+                      transform: "translate(-50%, -50%)",
+                    }}
                   >
-                    <span style={{ color: PRINCIPLES[i].color + "88" }}>— </span>{label}
+                    <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: p.color, boxShadow: `0 0 6px ${p.color}` }} />
+                    <span className="font-mono text-[9px] tracking-widest whitespace-nowrap" style={{ color: `${p.color}99` }}>{p.number}</span>
+                  </div>
+                );
+              })}
+
+              {/* Scan line sweeping */}
+              <div
+                className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+                style={{ width: 380, height: 380 }}
+              >
+                <div
+                  className="absolute left-0 right-0 h-[1px]"
+                  style={{
+                    background: "linear-gradient(90deg, transparent, #0ccfb044, transparent)",
+                    animation: "scanBeam 6s linear infinite",
+                    top: 0,
+                  }}
+                />
+              </div>
+
+              {/* Corner labels */}
+              <div className="absolute inset-0 pointer-events-none">
+                {PRINCIPLES.map((p, i) => (
+                  <div
+                    key={i}
+                    className="absolute font-mono text-[9px] tracking-widest"
+                    style={{
+                      color: `${p.color}70`,
+                      top: i < 2 ? `${6 + i * 38}%` : `${i === 2 ? 6 : 44}%`,
+                      [i % 2 === 0 ? "right" : "left"]: "0%",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <span style={{ color: `${p.color}55` }}>// </span>{p.title}
                   </div>
                 ))}
               </div>

@@ -34,15 +34,24 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          {/* Logo only — name is embedded in the image */}
-          <a href="#" className="flex items-center group" data-cursor="true">
-            <div className="relative w-10 h-10">
+          {/* Logo + Brand name */}
+          <a href="#" className="flex items-center gap-3 group" data-cursor="true">
+            <div className="relative w-14 h-14 shrink-0">
               <img
                 src="https://cdn-ai.onspace.ai/onspace/project/uploads/VTYhdTdtxks37QntytFFSG/logo1.jpeg"
                 alt="NeurusAGi"
-                className="w-10 h-10 rounded-full object-cover ring-1 ring-teal-neural/30 group-hover:ring-teal-neural/70 transition-all duration-300"
+                className="w-14 h-14 rounded-full object-cover ring-1 ring-teal-neural/30 group-hover:ring-teal-neural/60 transition-all duration-300"
               />
-              <span className="absolute -inset-0.5 rounded-full animate-glow-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <span className="absolute -inset-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ boxShadow: "0 0 20px #0ccfb044" }} />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span
+                className="font-grotesk font-bold text-white leading-none tracking-tight"
+                style={{ fontSize: "18px", letterSpacing: "-0.02em" }}
+              >
+                Neurus<span style={{ background: "linear-gradient(135deg, #d4a853, #f0c040)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>AGi</span>
+              </span>
+              <span className="font-mono text-[9px] text-white/30 tracking-[0.2em] uppercase mt-0.5">A Quantum Leap</span>
             </div>
           </a>
 

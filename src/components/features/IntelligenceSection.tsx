@@ -1,7 +1,5 @@
-import { useRef, useEffect, useState, lazy, Suspense } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-
-const DataStreamScene = lazy(() => import("@/components/three/DataStreamScene"));
 
 const COMPARE = [
   {
@@ -102,11 +100,10 @@ export default function IntelligenceSection() {
     >
       <div className="noise-overlay" />
 
-      {/* Background data streams */}
-      <div className="absolute inset-0 opacity-25">
-        <Suspense fallback={null}>
-          <DataStreamScene className="w-full h-full" />
-        </Suspense>
+      {/* Background: clean gradient depth — no 3D orbs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 100% 70% at 50% 0%, #071510 0%, #030508 60%)" }} />
+        <div className="absolute inset-0" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(12,207,176,0.006) 3px, rgba(12,207,176,0.006) 4px)" }} />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">

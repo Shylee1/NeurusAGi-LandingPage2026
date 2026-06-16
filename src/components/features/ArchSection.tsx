@@ -1,11 +1,8 @@
-import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import lnnViz from "@/assets/lnn-viz.jpg";
 import dataStorage from "@/assets/data-storage.jpg";
-import safetyArch from "@/assets/safety-arch.jpg";
 import quantumSphere from "@/assets/quantum-sphere.jpg";
-
-const CrystalScene = lazy(() => import("@/components/three/CrystalScene"));
 
 const PILLARS = [
   {
@@ -67,9 +64,9 @@ function PillarScene({ pillar, active }: { pillar: typeof PILLARS[0]; active: bo
         <div className="absolute inset-0 bg-gradient-to-t from-void via-transparent to-void/50" />
       </div>
 
-      {/* Content + 3D Crystal layout */}
+      {/* Content layout */}
       <div className="relative z-10 h-full flex items-center px-8 lg:px-16 gap-8 lg:gap-16">
-        <div className="flex flex-col justify-center max-w-lg flex-1">
+        <div className="flex flex-col justify-center max-w-xl flex-1">
           <div className="flex items-center gap-3 mb-6">
             <span className="font-mono text-xs tracking-widest" style={{ color: pillar.color }}>
               {pillar.label}
@@ -103,11 +100,32 @@ function PillarScene({ pillar, active }: { pillar: typeof PILLARS[0]; active: bo
           </div>
         </div>
 
-        {/* 3D Holographic Crystal */}
-        <div className="hidden lg:block shrink-0 w-56 h-56 xl:w-72 xl:h-72">
-          <Suspense fallback={null}>
-            <CrystalScene color={pillar.color} index={PILLARS.indexOf(pillar)} />
-          </Suspense>
+        {/* Data visualization panel — replaces 3D geometry */}
+        <div className="hidden lg:flex shrink-0 w-56 xl:w-64 flex-col gap-3">
+          {pillar.stats.map((stat, si) => (
+            <div
+              key={si}
+              className="relative overflow-hidden p-6"
+              style={{
+                background: `linear-gradient(135deg, ${pillar.color}08 0%, transparent 100%)`,
+                border: `1px solid ${pillar.color}20`,
+              }}
+            >
+              <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: `linear-gradient(90deg, transparent, ${pillar.color}60, transparent)` }} />
+              <div className="font-mono font-bold text-4xl mb-1" style={{ color: pillar.color }}>{stat.value}</div>
+              <div className="font-mono text-[10px] text-white/40 tracking-widest uppercase leading-tight">{stat.label}</div>
+            </div>
+          ))}
+          {/* Mini spec grid */}
+          <div className="p-4" style={{ border: `1px solid ${pillar.color}12`, background: "rgba(255,255,255,0.02)" }}>
+            <div className="font-mono text-[9px] tracking-widest uppercase mb-3" style={{ color: `${pillar.color}66` }}>Core Spec</div>
+            {["Post-Token", "Edge Deploy", "No Servers", "Offline OK"].map((s, si) => (
+              <div key={si} className="flex items-center gap-2 py-1 border-b border-white/4 last:border-0">
+                <div className="w-1 h-1 rounded-full" style={{ background: pillar.color, opacity: 0.6 }} />
+                <span className="font-mono text-[9px] text-white/30">{s}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
