@@ -2,9 +2,9 @@ import { Suspense, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { QuantumOrb } from "./QuantumOrb";
-#import { QuantumField } from "./QuantumField";
+import { QuantumField } from "./QuantumField";
 
-#function EnvironmentLights() {
+function EnvironmentLights() {
   return (
     <>
       <ambientLight intensity={0.15} />
@@ -15,7 +15,7 @@ import { QuantumOrb } from "./QuantumOrb";
   );
 }
 
-#function EnergyRing({ radius, speed, tilt, color }: { radius: number; speed: number; tilt: number; color: string }) {
+function EnergyRing({ radius, speed, tilt, color }: { radius: number; speed: number; tilt: number; color: string }) {
   const ref = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -32,7 +32,7 @@ import { QuantumOrb } from "./QuantumOrb";
   );
 }
 
-#function SceneContent() {
+function SceneContent() {
   return (
     <>
       <EnvironmentLights />
