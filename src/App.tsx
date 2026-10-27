@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/react";
 import Landing from "@/pages/Landing";
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="*" element={<Landing />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   );
 }
